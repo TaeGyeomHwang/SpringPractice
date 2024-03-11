@@ -1,4 +1,4 @@
-package org.zerock.sample;
+package com.zerock.sample;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
