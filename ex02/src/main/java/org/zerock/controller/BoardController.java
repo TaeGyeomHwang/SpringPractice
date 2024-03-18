@@ -47,9 +47,7 @@ public class BoardController {
 
 	@GetMapping({ "/get", "/modify" })
 	public void get(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, Model model) {
-
 		log.info("/get or modify");
-
 		model.addAttribute("board", service.get(bno));
 		model.addAttribute("cri", cri);
 	}
@@ -60,9 +58,7 @@ public class BoardController {
 		if (service.modify(board)) {
 			rttr.addFlashAttribute("result", "success");
 		}
-		rttr.addAttribute("pageNum", cri.getPageNum());
-		rttr.addAttribute("amount", cri.getAmount());
-		return "redirect:/board/list";
+		return "redirect:/board/list" + cri.getListLink();
 	}
 
 	@PostMapping("/remove")
@@ -71,8 +67,6 @@ public class BoardController {
 		if (service.remove(bno)) {
 			rttr.addFlashAttribute("result", "success");
 		}
-		rttr.addAttribute("pageNum", cri.getPageNum());
-		rttr.addAttribute("amount", cri.getAmount());
-		return "redirect:/board/list";
+		return "redirect:/board/list" + cri.getListLink();
 	}
 }
