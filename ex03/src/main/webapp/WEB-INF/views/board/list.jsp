@@ -34,16 +34,18 @@
 					</thead>
 
 					<c:forEach items="${list}" var="board">
-
 						<tr>
 							<td><c:out value="${board.bno}" /></td>
-							<td><a class="move" href='<c:out value="${board.bno}"/>'><c:out
-										value="${board.title}" /></a></td>
+							<td><a class='move' href='<c:out value="${board.bno}"/>'>
+									<c:out value="${board.title}" /> <b>[ <c:out
+											value="${board.replyCnt}" /> ]
+								</b>
+							</a>
 							<td><c:out value="${board.writer}" /></td>
 							<td><fmt:formatDate pattern="yyyy-MM-dd"
 									value="${board.regdate}" /></td>
 							<td><fmt:formatDate pattern="yyyy-MM-dd"
-									value="${board.updateDate }" /></td>
+									value="${board.updateDate}" /></td>
 						</tr>
 					</c:forEach>
 				</table>
@@ -83,6 +85,8 @@
 
 				<div class="pull-right">
 					<ul class="pagination">
+						<li class="paginate_button previous"><a href="1">Start</a></li>
+
 						<c:if test="${pageMaker.prev}">
 							<li class="paginate_button previous"><a
 								href="${pageMaker.startPage-1 }">Previous</a></li>
@@ -99,9 +103,13 @@
 							<li class="paginate_button next"><a
 								href="${pageMaker.endPage + 1 }">Next</a></li>
 						</c:if>
+
+						<li class="paginate_button next"><a
+							href="${pageMaker.realEnd }">End</a></li>
 					</ul>
 
 					<form id="actionForm" action="/board/list" method="get">
+						<input class="bnoValue" type="hidden" name="bno" value="">
 						<input type="hidden" name="pageNum"
 							value="${pageMaker.cri.pageNum }"> <input type="hidden"
 							name="amount" value="${pageMaker.cri.amount }"> <input
@@ -145,84 +153,80 @@
 	<!-- /.col-lg-12 -->
 </div>
 <script>
-	$(document)
-			.ready(
-					function() {
-						var result = '<c:out value="${result}"/>';
+	$(document).ready(
+			function() {
+				var result = '<c:out value="${result}"/>';
 
-						checkModal(result);
+				checkModal(result);
 
-						history.replaceState({}, null, null);
+				history.replaceState({}, null, null);
 
-						function checkModal(result) {
-							if (result === '' || history.state) {
-								return;
-							}
+				function checkModal(result) {
+					if (result === '' || history.state) {
+						return;
+					}
 
-							if (parseInt(result) > 0) {
-								$('.modal-body').html(
-										"게시글 " + parseInt(result)
-												+ "번이 등록되었습니다.");
-							}
-							$('#myModal').modal("show");
-						}
+					if (parseInt(result) > 0) {
+						$('.modal-body').html(
+								"게시글 " + parseInt(result) + "번이 등록되었습니다.");
+					}
+					$('#myModal').modal("show");
+				}
 
-						$('#regBtn').on("click", function() {
-							self.location = "/board/register";
-						});
+				$('#regBtn').on("click", function() {
+					self.location = "/board/register";
+				});
 
-						var actionForm = $("#actionForm");
+				var actionForm = $("#actionForm");
 
-						$('.paginate_button a').on(
-								'click',
-								function(e) {
-									e.preventDefault();
+				$('.paginate_button a').on(
+						'click',
+						function(e) {
+							e.preventDefault();
 
-									console.log('click');
+							console.log('click');
 
-									actionForm.find("input[name='pageNum']")
-											.val($(this).attr("href"));
-									actionForm.submit();
-								})
+							actionForm.find("input[name='pageNum']").val(
+									$(this).attr("href"));
+							actionForm.submit();
+						})
 
-						$(".move")
-								.on(
-										"click",
-										function(e) {
-											e.preventDefault();
+				$(".move").on("click", function(e) {
+					e.preventDefault();
 
-											actionForm
-													.append("<input type='hidden' name='bno' value='"
-															+ $(this).attr(
-																	"href")
-															+ "'>");
-											actionForm.attr("action",
-													"/board/get");
-											actionForm.submit();
-										})
+					/* actionForm.append("<input type='hidden' name='bno' value='"+ $(this).attr("href")+ "'>"); */
+					$(".bnoValue").val($(this).attr("href"));
+					actionForm.attr("action", "/board/get");
+					actionForm.submit();
+				})
 
-						// searchForm
-						var searchForm = $('#searchForm');
-						$('#searchForm button').on(
-								'click',
-								function(e) {
-									if (!searchForm.find('option:selected')
-											.val()) {
-										alert("검색종류를 선택하세요.");
-										return false;
-									}
+				$(".move").on("mousedown", function(e) {
+					if (e.button === 1) { // 중간 버튼 클릭 시
+						e.preventDefault(); // 기본 동작 방지
+						$(".bnoValue").val($(this).attr("href"));
+						actionForm.attr("action", "/board/get");
+						actionForm.attr("target", "_blank"); // 새 창에서 열리도록
+						actionForm.submit();
+					}
+				});
 
-									if (!searchForm.find(
-											"input[name='keyword']").val()) {
-										alert("키워드를 입력하세요");
-										return false;
-									}
+				// searchForm
+				var searchForm = $('#searchForm');
+				$('#searchForm button').on('click', function(e) {
+					if (!searchForm.find('option:selected').val()) {
+						alert("검색종류를 선택하세요.");
+						return false;
+					}
 
-									searchForm.find("input[name='pageNum']")
-											.val("1");
-									e.preventDefault();
-									searchForm.submit();
-								})
-					});
+					if (!searchForm.find("input[name='keyword']").val()) {
+						alert("키워드를 입력하세요");
+						return false;
+					}
+
+					searchForm.find("input[name='pageNum']").val("1");
+					e.preventDefault();
+					searchForm.submit();
+				})
+			});
 </script>
 <%@ include file="../includes/footer.jsp"%>

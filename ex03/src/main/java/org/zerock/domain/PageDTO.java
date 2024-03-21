@@ -9,6 +9,8 @@ public class PageDTO {
 	private int startPage;
 	private int endPage;
 	private boolean prev, next;
+	private boolean isLastPage;
+	private int realEnd;
 
 	private int total;
 	private Criteria cri;
@@ -21,10 +23,12 @@ public class PageDTO {
 		this.startPage = this.endPage - 9;
 
 		int realEnd = (int) (Math.ceil((total * 1.0) / cri.getAmount()));
+		this.realEnd = realEnd;
 		if (realEnd < this.endPage)
 			this.endPage = realEnd;
 
 		this.prev = this.startPage > 1;
 		this.next = this.endPage < realEnd;
+		this.isLastPage = this.endPage == realEnd;
 	}
 }
