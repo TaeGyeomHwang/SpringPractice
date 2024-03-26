@@ -43,4 +43,8 @@
 			select count(rno) from tbl_reply where bno = #{bno}
 		]]>
 	</select>
+	
+	<delete id="deleteAllByBno">
+		delete from tbl_reply where bno = #{bno}
+	</delete>
 </mapper>

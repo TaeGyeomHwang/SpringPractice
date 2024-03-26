@@ -16,4 +16,5 @@ public interface ReplyMapper {
 			@Param("bno") Long bno
 			);
 	public int getCountByBno(Long bno);
+	public void deleteAllByBno(Long bno);
 }
