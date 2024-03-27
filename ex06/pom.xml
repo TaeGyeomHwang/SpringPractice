@@ -35,14 +35,14 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
-		
-		
+
+
 		<!-- AspectJ -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -69,6 +69,12 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 			<version>${org.springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.oracle.ojdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<version>19.3.0.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
@@ -97,7 +103,7 @@
 			<groupId>org.bgee.log4jdbc-log4j2</groupId>
 			<artifactId>log4jdbc-log4j2-jdbc4</artifactId>
 			<version>1.16</version>
-		</dependency>		
+		</dependency>
 
 		<!-- AspectJ -->
 		<dependency>
@@ -213,48 +219,49 @@
 		</dependency>
 
 
-	<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
-	<dependency>
-		<groupId>org.quartz-scheduler</groupId>
-		<artifactId>quartz</artifactId>
-		<version>2.3.0</version>
-	</dependency>
+		<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.3.0</version>
+		</dependency>
 
 
-	<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz-jobs -->
-	<dependency>
-		<groupId>org.quartz-scheduler</groupId>
-		<artifactId>quartz-jobs</artifactId>
-		<version>2.3.0</version>
-	</dependency>
+		<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz-jobs -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz-jobs</artifactId>
+			<version>2.3.0</version>
+		</dependency>
 
 
 
 
-<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-web</artifactId>
-    <version>5.0.7.RELEASE</version>
-</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>5.0.7.RELEASE</version>
+		</dependency>
 
-<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-config</artifactId>
-    <version>5.0.7.RELEASE</version>
-</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>5.0.7.RELEASE</version>
+		</dependency>
 
-<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-core</artifactId>
-    <version>5.0.7.RELEASE</version>
-</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>5.0.7.RELEASE</version>
+		</dependency>
 
-<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs -->
-<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-taglibs</artifactId>
-    <version>5.0.7.RELEASE</version>
-</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>5.0.7.RELEASE</version>
+		</dependency>
+
 
 	</dependencies>
 	<build>
