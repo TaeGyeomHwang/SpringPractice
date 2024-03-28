@@ -3,7 +3,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="sec"%>
+
 <%@ include file="../includes/header.jsp"%>
+
 <link rel="stylesheet" href="/resources/css/attach.css">
 
 <div class="row">
@@ -20,6 +24,8 @@
 			<!-- /.panel-heading -->
 			<div class="panel-body">
 				<form role="form" action="/board/register" method="post">
+					<input type="hidden" name="${_csrf.parameterName}"
+									value="${_csrf.token}" />
 					<div class="form-group">
 						<label>Title</label><input class="form-control" name='title'>
 					</div>
@@ -28,7 +34,8 @@
 						<textarea class="form-control" rows="3" name='content'></textarea>
 					</div>
 					<div class="form-group">
-						<label>Writer</label><input class="form-control" name='writer'>
+						<label>Writer</label> <input class="form-control" name='writer' 
+						value='<sec:authentication property="principal.username"/>' readonly="readonly">
 					</div>
 					<button type="submit" class="btn btn-default">Submit
 						Button</button>
@@ -104,37 +111,45 @@
 		    return true;
 		  }
 		
+		  var csrfHeaderName ="${_csrf.headerName}"; 
+		  var csrfTokenValue="${_csrf.token}";
+
+		  
 		  $("input[type='file']").change(function(e){
 
-			    var formData = new FormData();
-			    
-			    var inputFile = $("input[name='uploadFile']");
-			    
-			    var files = inputFile[0].files;
-			    
-			    for(var i = 0; i < files.length; i++){
+		    var formData = new FormData();
+		    
+		    var inputFile = $("input[name='uploadFile']");
+		    
+		    var files = inputFile[0].files;
+		    
+		    for(var i = 0; i < files.length; i++){
 
-			      if(!checkExtension(files[i].name, files[i].size) ){
-			        return false;
-			      }
-			      formData.append("uploadFile", files[i]);
-			      
-			    }
-			    
-			    $.ajax({
-			      url: '/uploadAjaxAction',
-			      processData: false, 
-			      contentType: false,data: 
-			      formData,type: 'POST',
-			      dataType:'json',
-			        success: function(result){
-			          console.log(result); 
-					  showUploadResult(result); //업로드 결과 처리 함수 
+		      if(!checkExtension(files[i].name, files[i].size) ){
+		        return false;
+		      }
+		      formData.append("uploadFile", files[i]);
+		      
+		    }
+		    
+		    $.ajax({
+		      url: '/uploadAjaxAction',
+		      processData: false, 
+		      contentType: false,
+		      beforeSend: function(xhr) {
+		          xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+		      },
+		      data:formData,
+		      type: 'POST',
+		      dataType:'json',
+		        success: function(result){
+		          console.log(result); 
+				  showUploadResult(result); //업로드 결과 처리 함수 
 
-			      }
-			    }); //$.ajax
-			    
-			  });  
+		      }
+		    }); //$.ajax
+		    
+		  });    
 		
 		function showUploadResult(uploadResultArr){
 		    if(!uploadResultArr || uploadResultArr.length == 0) {return;}
@@ -175,25 +190,30 @@
 		  }
 		
 		$(".uploadResult").on("click", "button", function(e){
-			  console.log("delete file");
-			  
-			  var targetFile = $(this).data("file");
-			  var type = $(this).data("type");
-			  
-			  var li = $(this).closest("li");
-			  
-			  $.ajax({
-			    url: '/deleteFile',
-			    data: {fileName: targetFile, type:type},
-			    dataType:'text',
-			    type: 'POST',
-			      success: function(result){
-			         alert(result);
-			         li.remove();
-			       }
-			  }); //$.ajax
-			  
-		});
+		    
+		    console.log("delete file");
+		      
+		    var targetFile = $(this).data("file");
+		    var type = $(this).data("type");
+		    
+		    var targetLi = $(this).closest("li");
+		    
+		    $.ajax({
+		      url: '/deleteFile',
+		      data: {fileName: targetFile, type:type},
+		      beforeSend: function(xhr) {
+		          xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+		      },
+
+		      dataType:'text',
+		      type: 'POST',
+		        success: function(result){
+		           alert(result);
+		           
+		           targetLi.remove();
+		         }
+		    }); //$.ajax
+		   });
 	});
 </script>
 

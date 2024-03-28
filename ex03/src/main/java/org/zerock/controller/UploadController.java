@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -68,16 +69,21 @@ public class UploadController {
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPost(MultipartFile[] uploadFile) {
+
 		List<AttachFileDTO> list = new ArrayList<>();
 		String uploadFolder = "C:\\upload";
 
 		String uploadFolderPath = getFolder();
+		// make folder --------
 		File uploadPath = new File(uploadFolder, uploadFolderPath);
 
-		if (uploadPath.exists() == false)
+		if (uploadPath.exists() == false) {
 			uploadPath.mkdirs();
+		}
+		// make yyyy/MM/dd folder
 
 		for (MultipartFile multipartFile : uploadFile) {
+
 			AttachFileDTO attachDTO = new AttachFileDTO();
 
 			String uploadFileName = multipartFile.getOriginalFilename();
@@ -88,6 +94,7 @@ public class UploadController {
 			attachDTO.setFileName(uploadFileName);
 
 			UUID uuid = UUID.randomUUID();
+
 			uploadFileName = uuid.toString() + "_" + uploadFileName;
 
 			try {
@@ -97,7 +104,9 @@ public class UploadController {
 				attachDTO.setUuid(uuid.toString());
 				attachDTO.setUploadPath(uploadFolderPath);
 
+				// check image type file
 				if (checkImageType(saveFile)) {
+
 					attachDTO.setImage(true);
 
 					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
@@ -107,10 +116,13 @@ public class UploadController {
 					thumbnail.close();
 				}
 
+				// add to List
 				list.add(attachDTO);
+
 			} catch (Exception e) {
-				log.error(e.getMessage());
-			} // end catch
+				e.printStackTrace();
+			}
+
 		} // end for
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
@@ -193,26 +205,37 @@ public class UploadController {
 		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/deleteFile")
 	@ResponseBody
 	public ResponseEntity<String> deleteFile(String fileName, String type) {
+
 		log.info("deleteFile: " + fileName);
 
 		File file;
 
 		try {
-			file = new File("c:\\upload\\"+URLDecoder.decode(fileName, "UTF-8"));
+			file = new File("c:\\upload\\" + URLDecoder.decode(fileName, "UTF-8"));
+
 			file.delete();
-			if(type.equals("image")) {
+
+			if (type.equals("image")) {
+
 				String largeFileName = file.getAbsolutePath().replace("s_", "");
-				log.info("largeFileName: "+largeFileName);
+
+				log.info("largeFileName: " + largeFileName);
+
 				file = new File(largeFileName);
+
 				file.delete();
 			}
+
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+
 		return new ResponseEntity<String>("deleted", HttpStatus.OK);
+
 	}
 }
